@@ -1,13 +1,17 @@
-import { useState } from 'react'
-import { useRouter } from 'next/router'
+import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Header from '../components/Header'
 import { useCart } from './_app'
 import { supabase } from '../lib/supabase'
 
 export default function Checkout() {
+  const [router, setRouter] = useState(null)
+
+  useEffect(() => {
+    const { default: Router } = require('next/router')
+    setRouter(Router)
+  }, [])
   const { cart, cartTotal, clearCart } = useCart()
-  const router = useRouter()
   const shipping = cartTotal > 500 ? 0 : 50
   const grand = cartTotal + shipping
 
@@ -116,7 +120,7 @@ export default function Checkout() {
   }
 
   if (cart.length === 0 && step < 3) {
-    router.push('/')
+    if (router) router.push('/')
     return null
   }
 
@@ -327,7 +331,7 @@ export default function Checkout() {
             <button className="btn btn-dark" style={{ margin: 8 }} onClick={printLabel}>
               🖨️ พิมพ์ใบจ่าหน้า
             </button>
-            <button className="btn btn-primary" style={{ margin: 8 }} onClick={() => router.push('/')}>
+            <button className="btn btn-primary" style={{ margin: 8 }} onClick={() => router && router.push('/')}>
               🛍️ สั่งซื้ออีกครั้ง
             </button>
           </div>
